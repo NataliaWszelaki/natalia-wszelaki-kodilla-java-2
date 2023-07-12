@@ -1,0 +1,148 @@
+create database kodilla_course;
+create user 'kodilla_user' identified with MYSQL_NATIVE_PASSWORD by 'kodilla_Pass123';
+show DATABASES;
+GRANT ALL PRIVILEGES ON kodilla_course.* to kodilla_user;
+
+show TABLES;
+
+
+CREATE TABLE USERS
+(
+    ID SERIAL PRIMARY KEY,
+    FIRSTNAME VARCHAR(100),
+    LASTNAME VARCHAR(100)
+);
+
+CREATE TABLE POSTS
+(
+    ID SERIAL PRIMARY KEY,
+    USER_ID BIGINT UNSIGNED NOT NULL,
+    BODY VARCHAR(1024),
+    FOREIGN KEY (USER_ID) REFERENCES USERS(ID)
+);
+
+SELECT * FROM USERS;
+
+INSERT INTO USERS (FIRSTNAME, LASTNAME)
+VALUES ('John', 'Smith');
+
+COMMIT;
+
+INSERT INTO POSTS (USER_ID, BODY)
+VALUES (1, 'This is my first post on this forum!');
+
+COMMIT;
+
+SELECT * FROM POSTS;
+
+INSERT INTO USERS (FIRSTNAME, LASTNAME)
+VALUES ('Zachary', 'Lee');
+
+INSERT INTO USERS (FIRSTNAME, LASTNAME)
+VALUES ('Stephanie', 'Kovalsky');
+
+INSERT INTO USERS (FIRSTNAME, LASTNAME)
+VALUES ('Thomas', 'Landgren');
+
+INSERT INTO USERS (FIRSTNAME, LASTNAME)
+VALUES ('John', 'Thomson');
+
+INSERT INTO POSTS (USER_ID, BODY)
+VALUES (2, 'This is my first post too!');
+
+INSERT INTO POSTS (USER_ID, BODY)
+VALUES (2, 'How are you?');
+
+INSERT INTO POSTS (USER_ID, BODY)
+VALUES (1, 'Quite good, thanks bro!');
+
+INSERT INTO POSTS (USER_ID, BODY)
+VALUES (4, 'Yo all! Here is Thomas!');
+
+COMMIT;
+
+SELECT * FROM USERS;
+SELECT * FROM POSTS;
+
+CREATE TABLE ISSUESLISTS
+(
+    ID SERIAL PRIMARY KEY,
+    NAME VARCHAR(100)
+);
+
+CREATE TABLE ISSUES
+(
+    ID SERIAL PRIMARY KEY,
+    ISSUESLISTS_ID BIGINT UNSIGNED NOT NULL,
+    SUMMARY VARCHAR(100),
+    DESCRIPTION VARCHAR(1024),
+    USER_ID_ASSIGNEDTO BIGINT UNSIGNED NOT NULL,
+    FOREIGN KEY (ISSUESLISTS_ID) REFERENCES ISSUESLISTS(ID),
+    FOREIGN KEY (USER_ID_ASSIGNEDTO) REFERENCES USERS(ID)
+);
+
+SELECT * FROM ISSUESLISTS;
+SELECT * FROM ISSUES;
+
+INSERT INTO ISSUESLISTS (NAME)
+VALUES ('ToDo');
+
+INSERT INTO ISSUESLISTS (NAME)
+VALUES ('In progress');
+
+INSERT INTO ISSUESLISTS (NAME)
+VALUES ('Done');
+
+COMMIT;
+
+SELECT * FROM ISSUESLISTS;
+
+INSERT INTO ISSUES (ISSUESLISTS_ID, SUMMARY, DESCRIPTION, USER_ID_ASSIGNEDTO)
+VALUES
+    (1, 'Task 1', 'This is the description for task 1', 2),
+    (1, 'Task 2', 'Description of task 2 goes here', 3),
+    (1, 'Task 3', 'A detailed description for task 3', 3),
+    (1, 'Meeting', 'Summary of the meeting held on Monday', 1),
+    (1, 'Project Update', 'Providing an update on the ongoing project', 3),
+    (1, 'Task 4', 'Description for the fourth task', 3),
+    (1, 'Task 5', 'Summary of task 5', 1),
+    (1, 'Task 6', 'Description for the sixth task', 2),
+    (1, 'Task 7', 'A detailed summary of the seventh task', 3),
+    (1, 'Task 8', 'Description for task number 8', 2);
+
+select * from ISSUES;
+
+INSERT INTO issues (ISSUESLISTS_ID, SUMMARY, DESCRIPTION, USER_ID_ASSIGNEDTO)
+VALUES
+    (2, 'Task A', 'This is the description for Task A in Issues List 2', 2),
+    (2, 'Task B', 'Description of Task B in Issues List 2', 3),
+    (2, 'Task C', 'Detailed description for Task C', 4),
+    (2, 'Meeting 1', 'Summary of the first meeting in Issues List 2', 1),
+    (2, 'Project Update 1', 'Providing an update on the ongoing project in Issues List 2', 3),
+    (2, 'Task D', 'Description for Task D in Issues List 2', 4),
+    (2, 'Task E', 'Summary of Task E in Issues List 2', 1),
+    (2, 'Task F', 'Description for Task F in Issues List 2', 2),
+    (2, 'Task G', 'A detailed summary of Task G in Issues List 2', 4),
+    (2, 'Task H', 'Description for Task H in Issues List 2', 2);
+
+select * from USERS;
+
+INSERT INTO issues (ISSUESLISTS_ID, SUMMARY, DESCRIPTION, USER_ID_ASSIGNEDTO)
+VALUES
+    (3, 'Task X', 'This is the description for Task X in Issues List 3', 5),
+    (3, 'Task Y', 'Description of Task Y in Issues List 3', 3),
+    (3, 'Task Z', 'Detailed description for Task Z', 4),
+    (3, 'Meeting 2', 'Summary of the second meeting in Issues List 3', 1),
+    (3, 'Project Update 2', 'Providing an update on the ongoing project in Issues List 3', 3),
+    (3, 'Task P', 'Description for Task P in Issues List 3', 4),
+    (3, 'Task Q', 'Summary of Task Q in Issues List 3', 5),
+    (3, 'Task R', 'Description for Task R in Issues List 3', 5),
+    (3, 'Task S', 'A detailed summary of Task S in Issues List 3', 4),
+    (3, 'Task T', 'Description for Task T in Issues List 3', 2);
+
+select * from issues;
+select * from issueslists;
+
+commit;
+
+
