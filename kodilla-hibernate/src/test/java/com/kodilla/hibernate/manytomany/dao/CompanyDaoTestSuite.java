@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -13,6 +15,9 @@ class CompanyDaoTestSuite {
 
     @Autowired
     private CompanyDao companyDao;
+
+    @Autowired
+    private EmployeeDao employeeDao;
 
     @Test
     void testSaveManyToMany() {
@@ -55,6 +60,80 @@ class CompanyDaoTestSuite {
             companyDao.deleteById(softwareMachineId);
             companyDao.deleteById(dataMaestersId);
             companyDao.deleteById(greyMatterId);
+        } catch (Exception e) {
+            //do nothing
+        }
+    }
+
+    @Test
+    void testNamedQuery() {
+
+        //Given
+        Employee johnSmith = new Employee("John", "Smith");
+        Employee michaelSmith = new Employee("Michael", "Smith");
+        Employee stephanieClarckson = new Employee("Stephanie", "Clarckson");
+        Employee lindaKovalsky = new Employee("Linda", "Kovalsky");
+
+        //When
+        employeeDao.save(johnSmith);
+        int johnSmithId = johnSmith.getId();
+        employeeDao.save(michaelSmith);
+        int michaelSmithId = michaelSmith.getId();
+        employeeDao.save(stephanieClarckson);
+        int stephanieClarcksonId = stephanieClarckson.getId();
+        employeeDao.save(lindaKovalsky);
+        int lindaKovalskyId = lindaKovalsky.getId();
+
+        List<Employee> employeeSmith = employeeDao.searchByName("Smith");
+
+        //Then
+        assertEquals(2, employeeSmith.size());
+
+        //CleanUp
+        try {
+        employeeDao.deleteById(johnSmithId);
+        employeeDao.deleteById(michaelSmithId);
+        employeeDao.deleteById(stephanieClarcksonId);
+        employeeDao.deleteById(lindaKovalskyId);
+        } catch (Exception e) {
+            //do nothing
+        }
+    }
+
+    @Test
+    void testNamedNativeQuery() {
+
+        //Given
+        Company softwareMachine = new Company("Software Machine");
+        Company dataMaesters = new Company("Data Maesters");
+        Company greyMatter = new Company("Grey Matter");
+        Company softwareGame = new Company("Software Game");
+        Company softwareTeam = new Company("Software Team");
+
+        //When
+        companyDao.save(softwareMachine);
+        int softwareMachineId = softwareMachine.getId();
+        companyDao.save(dataMaesters);
+        int dataMaestersId = dataMaesters.getId();
+        companyDao.save(greyMatter);
+        int greyMatterId = greyMatter.getId();
+        companyDao.save(softwareGame);
+        int softwareGameId = softwareGame.getId();
+        companyDao.save(softwareTeam);
+        int softwareTeamId = softwareTeam.getId();
+
+        List<Company> companyListSof = companyDao.searchCompaniesByFirstThreeLetters("Sof");
+
+        //Then
+        assertEquals(3, companyListSof.size());
+
+        //CleanUp
+        try {
+            companyDao.deleteById(softwareMachineId);
+            companyDao.deleteById(dataMaestersId);
+            companyDao.deleteById(greyMatterId);
+            companyDao.deleteById(softwareGameId);
+            companyDao.deleteById(softwareTeamId);
         } catch (Exception e) {
             //do nothing
         }
