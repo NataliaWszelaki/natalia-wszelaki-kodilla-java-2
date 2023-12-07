@@ -1,17 +1,21 @@
 package com.kodilla.hibernate.manytomany;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 @NamedNativeQuery(
         name = "Company.searchCompaniesByFirstThreeLetters",
         query = "SELECT * FROM COMPANIES" +
                 " WHERE LEFT(COMPANY_NAME, 3) = :name",
         resultClass = Company.class
+)
+
+@NamedQuery(
+        name = "Company.searchCompaniesByAnyPartOfTheName",
+        query = "FROM Company WHERE name LIKE :partOfTheName"
 )
 
 @Entity
@@ -58,5 +62,13 @@ public class Company {
 
     private void setEmployees(List<Employee> employees) {
         this.employees = employees;
+    }
+
+    @Override
+    public String toString() {
+        return "Company{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

@@ -1,8 +1,7 @@
 package com.kodilla.hibernate.invoice;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;

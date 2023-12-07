@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import jakarta.transaction.Transactional;
+import javax.transaction.Transactional;
 
 import java.util.List;
 
@@ -13,7 +13,10 @@ import java.util.List;
 @Repository
 public interface CompanyDao extends CrudRepository<Company, Integer> {
 
-    @Query
+    @Query(nativeQuery = true)
     List<Company> searchCompaniesByFirstThreeLetters(@Param("name") String name);
 
+
+    @Query
+    List<Company> searchCompaniesByAnyPartOfTheName(@Param("partOfTheName") String partOfTheName);
 }
