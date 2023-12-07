@@ -4,9 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class KodillaPatternsApplication {
+public class KodillaPatterns2Application {
 
     public static void main(String[] args) {
-        SpringApplication.run(KodillaPatternsApplication.class, args);
+        SpringApplication.run(KodillaPatterns2Application.class, args);
     }
 }
