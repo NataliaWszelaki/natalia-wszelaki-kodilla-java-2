@@ -11,4 +11,13 @@ public final class OrderDto {
     public List<ItemDto> getItems() {
         return items;
     }
+
+    @Override
+    public String toString() {
+        String s = "Order:" + "\n";
+        for (ItemDto itemDto : items) {
+            s = s + itemDto.toString() + "\n";
+        }
+        return s;
+    }
 }
