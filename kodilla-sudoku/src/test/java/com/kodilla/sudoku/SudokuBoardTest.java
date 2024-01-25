@@ -51,8 +51,8 @@ class SudokuBoardTest {
         }
 
         //Then
-        sudokuBoard.drawBoard();
-        deepClonedBoard.drawBoard();
+        System.out.println(sudokuBoard);
+        System.out.println(deepClonedBoard);
         assertEquals(9, deepClonedBoard.getSudokuBoard().size());
         assertEquals(9, deepClonedBoard.getSudokuBoard().get(8).getSudokuRow().size());
         assertEquals(9, deepClonedBoard.getSudokuBoard().get(8).getSudokuRow().get(8).getValuesSet().size());

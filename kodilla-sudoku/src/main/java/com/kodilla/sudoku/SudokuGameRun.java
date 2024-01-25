@@ -7,6 +7,7 @@ public class SudokuGameRun {
 
         boolean gameFinished = false;
         while (!gameFinished) {
+
             Scanner scanner = new Scanner(System.in);
             SudokuGame theGame = new SudokuGame(scanner);
             gameFinished = theGame.resolveSudoku();

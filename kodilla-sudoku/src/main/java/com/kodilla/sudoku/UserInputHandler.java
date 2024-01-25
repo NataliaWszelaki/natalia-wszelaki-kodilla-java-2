@@ -15,16 +15,8 @@ public class UserInputHandler {
             "If you want to start new game key - n.";
 
     protected String answer;
-    private final SudokuBoard sudokuBoard;
-    private final Scanner scanner;
 
-
-    public UserInputHandler(final SudokuBoard sudokuBoard, Scanner scanner) {
-        this.sudokuBoard = sudokuBoard;
-        this.scanner = scanner;
-    }
-
-    public void start() {
+    public void start(SudokuBoard sudokuBoard, Scanner scanner) {
 
         System.out.println("Welcome to Sudoku!");
         System.out.println();
@@ -33,10 +25,10 @@ public class UserInputHandler {
         System.out.println("Hi, " + name + "!");
         System.out.println("This time you can play only standard Sudoku Game - board 9 x 9.");
         System.out.println();
-        sudokuBoard.drawBoard();
+        System.out.println(sudokuBoard);
     }
 
-    public String getInput() {
+    public String getInput(SudokuBoard sudokuBoard, Scanner scanner) {
 
         String result = "";
         System.out.println(INSERT_MESSAGE);
@@ -44,7 +36,7 @@ public class UserInputHandler {
         if(answer.equals("SUDOKU")) {
             System.out.println("Application is solving Sudoku! Please wait!");
             result = "SUDOKU";
-        } else if (checkTheInput()) {
+        } else if (checkTheInput(sudokuBoard)) {
             result = "Correct values";
         } else {
             result = "Wrong value";
@@ -52,7 +44,7 @@ public class UserInputHandler {
         return result;
     }
 
-    public boolean checkTheInput() {
+    public boolean checkTheInput(SudokuBoard sudokuBoard) {
 
         boolean correctValues = false;
         List<String> numberChecker = new ArrayList<>();
@@ -83,7 +75,7 @@ public class UserInputHandler {
         return new GuessedValue(row, column, value);
     }
 
-    public boolean nextSteps() {
+    public boolean nextSteps(Scanner scanner) {
 
         boolean isTheGameOver = false;
 

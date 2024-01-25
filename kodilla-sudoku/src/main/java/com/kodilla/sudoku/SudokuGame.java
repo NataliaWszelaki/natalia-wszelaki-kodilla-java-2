@@ -7,17 +7,11 @@ import java.util.Scanner;
 
 public class SudokuGame {
 
-    private SudokuBoard sudokuBoard;
     private final Scanner scanner;
-    private final UserInputHandler userInputHandler;
-    private final SudokuSolvingAlgorithm sudokuSolvingAlgorithm;
     private final Deque<Backtrack> backtrack;
 
-    public SudokuGame(Scanner scanner) {
+    public SudokuGame(final Scanner scanner) {
         this.scanner = scanner;
-        this.sudokuBoard = new SudokuBoard();
-        this.userInputHandler = new UserInputHandler(sudokuBoard, scanner);
-        this.sudokuSolvingAlgorithm = new SudokuSolvingAlgorithm(sudokuBoard);
         this.backtrack = new ArrayDeque<>();
     }
 
@@ -25,27 +19,15 @@ public class SudokuGame {
 
         boolean isResolved = false;
         while (!isResolved) {
-            userInputHandler.start();
-            sudokuBoard = completingSudokuBoardByUser();
-            boolean isFinished = false;
-            while (!isFinished) {
-                try {
-                    sudokuSolvingAlgorithm.checkAllLoops();
-                } catch (SudokuUnsolvableException e) {
-                    if (!recoverBoard(backtrack)) {
-                        isFinished = true;
-                    }
-                    if (sudokuSolvingAlgorithm.countNumberOfEmptyCells() == 0) {
-                        System.out.println("Solved sudoku!");
-                        sudokuBoard.drawBoard();
-                        isFinished = true;
-                    }
-                    GuessedValue guessedValue = sudokuSolvingAlgorithm.guessingProcedure();
-                    backtrack.offerFirst(new Backtrack(sudokuBoard.deepCopy(), guessedValue));
-                    sudokuBoard.addNumberToBoard(guessedValue);
-                }
-            }
-            if (userInputHandler.nextSteps()) {
+            SudokuBoard sudokuBoard = new SudokuBoard();
+            UserInputHandler userInputHandler = new UserInputHandler();
+            SudokuSolvingAlgorithm sudokuSolvingAlgorithm = new SudokuSolvingAlgorithm(sudokuBoard);
+            backtrack.add(new Backtrack(sudokuBoard, new GuessedValue(0, 0, 0)));
+
+            userInputHandler.start(sudokuBoard, scanner);
+            completingSudokuBoardByUser(userInputHandler, sudokuBoard);
+            completingBoardByApp(sudokuBoard, sudokuSolvingAlgorithm);
+            if (userInputHandler.nextSteps(scanner)) {
                 isResolved = true;
             } else {
                 backtrack.clear();
@@ -54,11 +36,11 @@ public class SudokuGame {
         return isResolved;
     }
 
-    public SudokuBoard completingSudokuBoardByUser() {
+    public void completingSudokuBoardByUser(UserInputHandler userInputHandler, SudokuBoard sudokuBoard) {
 
         boolean isCompletedSudokuBoardByUser = false;
         while (!isCompletedSudokuBoardByUser) {
-            String result = userInputHandler.getInput();
+            String result = userInputHandler.getInput(sudokuBoard, scanner);
             switch (result) {
                 case "SUDOKU":
                     isCompletedSudokuBoardByUser = true;
@@ -68,10 +50,33 @@ public class SudokuGame {
                 case "Correct values":
                     GuessedValue guessedValue = userInputHandler.retrieveValues();
                     sudokuBoard.addNumberToBoard(guessedValue);
-                    sudokuBoard.drawBoard();
+                    System.out.println(sudokuBoard);
             }
         }
-        return sudokuBoard;
+    }
+
+    public void completingBoardByApp(SudokuBoard sudokuBoard, SudokuSolvingAlgorithm sudokuSolvingAlgorithm)
+            throws SudokuUnsolvableException, CloneNotSupportedException {
+
+        boolean isFinished = false;
+        while (!isFinished) {
+            try {
+                sudokuSolvingAlgorithm.checkAllLoops();
+            } catch (SudokuUnsolvableException e) {
+                if (!recoverBoard(backtrack)) {
+                    isFinished = true;
+                }
+            }
+            if (sudokuSolvingAlgorithm.countNumberOfEmptyCells() == 0) {
+                System.out.println("Sudoku has been solved!");
+                System.out.println(sudokuBoard);
+                isFinished = true;
+            } else {
+                GuessedValue guessedValue = sudokuSolvingAlgorithm.guessingProcedure();
+                backtrack.offerFirst(new Backtrack(sudokuBoard.deepCopy(), guessedValue));
+                sudokuBoard.addNumberToBoard(guessedValue);
+            }
+        }
     }
 
     public boolean recoverBoard(Deque<Backtrack> backtrack) {

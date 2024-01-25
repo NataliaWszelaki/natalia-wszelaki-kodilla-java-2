@@ -99,6 +99,20 @@ class SudokuSolvingAlgorithmTest {
     }
 
     @Test
+    void checkRowsShouldThrowException() {
+
+        //Given
+        sudokuBoard = new SudokuBoard();
+
+        sudokuSolvingAlgorithm = new SudokuSolvingAlgorithm(sudokuBoard);
+        sudokuBoard.addNumberToBoard(new GuessedValue(0, 0, 5));
+        sudokuBoard.addNumberToBoard(new GuessedValue(1, 0, 5));
+
+        //When&Then
+        assertThrows(SudokuUnsolvableException.class, () ->sudokuSolvingAlgorithm.checkAllLoops());
+    }
+
+    @Test
     void checkColumns() throws SudokuUnsolvableException {
 
         //Given
@@ -283,9 +297,10 @@ class SudokuSolvingAlgorithmTest {
 
         //Given
         sudokuBoard = new SudokuBoard();
+
         sudokuSolvingAlgorithm = new SudokuSolvingAlgorithm(sudokuBoard);
-        Set<Integer> testValuesSet = new HashSet<>();
-        sudokuBoard.getSudokuBoard().get(8).getSudokuRow().set(3, new SudokuElement(SudokuElement.EMPTY, testValuesSet));
+        sudokuBoard.addNumberToBoard(new GuessedValue(0, 0, 5));
+        sudokuBoard.addNumberToBoard(new GuessedValue(1, 0, 5));
 
         //When&Then
         assertThrows(SudokuUnsolvableException.class, () ->sudokuSolvingAlgorithm.checkAllLoops());

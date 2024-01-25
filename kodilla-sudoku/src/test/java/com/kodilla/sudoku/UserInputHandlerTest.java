@@ -19,10 +19,10 @@ class UserInputHandlerTest {
         String simulatedInput = "q";
         InputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
         Scanner scanner = new Scanner(inputStream);
-        UserInputHandler userInputHandler = new UserInputHandler(sudokuBoard, scanner);
+        UserInputHandler userInputHandler = new UserInputHandler();
 
         //When
-        boolean answer = userInputHandler.nextSteps();
+        boolean answer = userInputHandler.nextSteps(scanner);
 
         //Then
         assertTrue(answer);

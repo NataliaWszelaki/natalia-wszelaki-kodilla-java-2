@@ -23,33 +23,6 @@ public class SudokuBoard extends Prototype<SudokuBoard> {
         return sudokuBoard;
     }
 
-    public void drawBoard() {
-
-        String[] numbersArray = new String[]{"   1 ", "2 ", "3 ", "4 ", "5 ", "6 ", "7 ", "8 ", "9 "};
-        for (int i = 0; i < 9; i++) {
-            System.out.print(numbersArray[i]);
-        }
-        System.out.println();
-        System.out.println(LINE3);
-        for (int k = 0; k < 9; k++) {
-            System.out.print(k + 1 + " |");
-            for (int j = 0; j < 9; j++) {
-                String element;
-                if (sudokuBoard.get(k).getSudokuRow().get(j).getValue() == EMPTY) {
-                    element = " ";
-                } else {
-                    element = Integer.toString(sudokuBoard.get(k).getSudokuRow().get(j).getValue());
-                }
-                System.out.print(element + "|");
-            }
-            if (k % 3 == 2) {
-                System.out.println("\n" + LINE3);
-            } else {
-                System.out.println("\n" + LINE);
-            }
-        }
-    }
-
     public void addNumberToBoard(GuessedValue guessedValue) {
 
         sudokuBoard.get(guessedValue.getRow()).getSudokuRow().get(guessedValue.getColumn())
@@ -68,5 +41,30 @@ public class SudokuBoard extends Prototype<SudokuBoard> {
             clonedBoard.getSudokuBoard().add(clonedRow);
         }
         return clonedBoard;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder board = new StringBuilder();
+        board.append("   1 2 3 4 5 6 7 8 9 \n");
+        board.append(LINE3);
+
+        for (int k = 0; k < 9; k++) {
+            board.append("\n").append(k + 1).append(" |");
+            for (int j = 0; j < 9; j++) {
+
+                if (sudokuBoard.get(k).getSudokuRow().get(j).getValue() == EMPTY) {
+                    board.append(" |");
+                } else {
+                    board.append(sudokuBoard.get(k).getSudokuRow().get(j).getValue()).append("|");
+                }
+            }
+            if (k % 3 == 2) {
+                board.append("\n").append(LINE3);
+            } else {
+                board.append("\n").append(LINE);
+            }
+        }
+        return board.toString();
     }
 }
