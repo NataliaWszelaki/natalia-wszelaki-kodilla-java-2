@@ -7,11 +7,13 @@ import java.util.Scanner;
 
 public class UserInputHandler {
 
-    public static String INVALID_INPUT = "Invalid input! Try again!";
-    public static String INSERT_MESSAGE = "Provide 3 numbers in the range from 1 to 9, separated by commas. " +
-            "\nThese numbers respectively represent: column, row, and value." + "\nType SUDOKU to solve Sudoku.";
-    public static String OCCUPIED_CELL = "Invalid input. The selected cell is already occupied. Try again!";
-    public static String NEXT_STEP_MESSAGE = "If you want to quit press key - q.\n" +
+    public final static String INVALID_INPUT = "Invalid input! Try again!";
+    public final static String INSERT_MESSAGE = """
+            Provide 3 numbers in the range from 1 to 9, separated by commas.\s
+            These numbers respectively represent: column, row, and value.
+            Type SUDOKU to solve Sudoku.""";
+    public final static String OCCUPIED_CELL = "Invalid input. The selected cell is already occupied. Try again!";
+    public final static String NEXT_STEP_MESSAGE = "If you want to quit press key - q.\n" +
             "If you want to start new game key - n.";
 
     protected String answer;
@@ -30,9 +32,9 @@ public class UserInputHandler {
 
     public String getInput(SudokuBoard sudokuBoard, Scanner scanner) {
 
-        String result = "";
         System.out.println(INSERT_MESSAGE);
         answer = scanner.next().toUpperCase();
+        String result;
         if(answer.equals("SUDOKU")) {
             System.out.println("Application is solving Sudoku! Please wait!");
             result = "SUDOKU";
@@ -88,7 +90,7 @@ public class UserInputHandler {
                 isTheGameOver = true;
                 isFinalAnswerCorrect = true;
             } else if (finalAnswer.equals("n")) {
-                System.out.println("Have fun!");
+                System.out.println("Have fun!" + "\n");
                 isFinalAnswerCorrect = true;
             } else {
                 System.out.println(INVALID_INPUT);

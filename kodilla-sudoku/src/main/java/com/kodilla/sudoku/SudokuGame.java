@@ -22,12 +22,17 @@ public class SudokuGame {
             SudokuBoard sudokuBoard = new SudokuBoard();
             UserInputHandler userInputHandler = new UserInputHandler();
             SudokuSolvingAlgorithm sudokuSolvingAlgorithm = new SudokuSolvingAlgorithm(sudokuBoard);
-            backtrack.add(new Backtrack(sudokuBoard, new GuessedValue(0, 0, 0)));
 
             userInputHandler.start(sudokuBoard, scanner);
             completingSudokuBoardByUser(userInputHandler, sudokuBoard);
-            completingBoardByApp(sudokuBoard, sudokuSolvingAlgorithm);
-            if (userInputHandler.nextSteps(scanner)) {
+
+            if (sudokuSolvingAlgorithm.countNumberOfEmptyCells() == 81) {
+                System.out.println("Empty board! This Sudoku cannot be solved!");
+            } else {
+                completingBoardByApp(sudokuBoard, sudokuSolvingAlgorithm);
+            }
+            boolean nextSteps = userInputHandler.nextSteps(scanner);
+            if (nextSteps) {
                 isResolved = true;
             } else {
                 backtrack.clear();
@@ -63,8 +68,9 @@ public class SudokuGame {
             try {
                 sudokuSolvingAlgorithm.checkAllLoops();
             } catch (SudokuUnsolvableException e) {
-                if (!recoverBoard(backtrack)) {
-                    isFinished = true;
+                boolean recoverBoardResult = recoverBoard(backtrack);
+                if (!recoverBoardResult) {
+                    break;
                 }
             }
             if (sudokuSolvingAlgorithm.countNumberOfEmptyCells() == 0) {
@@ -86,8 +92,6 @@ public class SudokuGame {
         while (!end) {
             if (backtrack.size() == 0) {
                 System.out.println("This Sudoku cannot be solved!");
-                result = false;
-                end = true;
             } else {
                 Backtrack recoveredBacktrack = backtrack.pollFirst();
                 SudokuBoard sudokuBoard = recoveredBacktrack.getSudokuBoard();
@@ -97,9 +101,11 @@ public class SudokuGame {
                     element.setValue(SudokuElement.EMPTY);
                     element.getValuesSet().remove(guessedValue.getValue());
                     result = true;
-                    end = true;
+                } else {
+                    System.out.println("This Sudoku cannot be solved!");
                 }
             }
+            end = true;
         }
         return result;
     }

@@ -99,17 +99,17 @@ class SudokuSolvingAlgorithmTest {
     }
 
     @Test
-    void checkRowsShouldThrowException() {
+    void checkRowsShouldThrowExceptionTheSameNumbersInTheRow() {
 
         //Given
         sudokuBoard = new SudokuBoard();
 
         sudokuSolvingAlgorithm = new SudokuSolvingAlgorithm(sudokuBoard);
         sudokuBoard.addNumberToBoard(new GuessedValue(0, 0, 5));
-        sudokuBoard.addNumberToBoard(new GuessedValue(1, 0, 5));
+        sudokuBoard.addNumberToBoard(new GuessedValue(0, 1, 5));
 
         //When&Then
-        assertThrows(SudokuUnsolvableException.class, () ->sudokuSolvingAlgorithm.checkAllLoops());
+        assertThrows(SudokuUnsolvableException.class, () ->sudokuSolvingAlgorithm.checkRows());
     }
 
     @Test
@@ -193,6 +193,20 @@ class SudokuSolvingAlgorithmTest {
         sudokuBoard.addNumberToBoard(new GuessedValue(7,3,8));
         Set<Integer> testValuesSet = new HashSet<>();
         sudokuBoard.getSudokuBoard().get(8).getSudokuRow().set(3, new SudokuElement(SudokuElement.EMPTY, testValuesSet));
+
+        //When&Then
+        assertThrows(SudokuUnsolvableException.class, () ->sudokuSolvingAlgorithm.checkColumns());
+    }
+
+    @Test
+    void checkColumnShouldThrowExceptionTheSameNumbersInTheColumn() {
+
+        //Given
+        sudokuBoard = new SudokuBoard();
+
+        sudokuSolvingAlgorithm = new SudokuSolvingAlgorithm(sudokuBoard);
+        sudokuBoard.addNumberToBoard(new GuessedValue(1, 1, 5));
+        sudokuBoard.addNumberToBoard(new GuessedValue(0, 1, 5));
 
         //When&Then
         assertThrows(SudokuUnsolvableException.class, () ->sudokuSolvingAlgorithm.checkColumns());
@@ -293,14 +307,28 @@ class SudokuSolvingAlgorithmTest {
     }
 
     @Test
-    void checkAllLoopsShouldThrowException() {
+    void checkBlockShouldThrowExceptionTheSameNumbersInTheBlock() {
 
         //Given
         sudokuBoard = new SudokuBoard();
 
         sudokuSolvingAlgorithm = new SudokuSolvingAlgorithm(sudokuBoard);
         sudokuBoard.addNumberToBoard(new GuessedValue(0, 0, 5));
+        sudokuBoard.addNumberToBoard(new GuessedValue(0, 1, 5));
+
+        //When&Then
+        assertThrows(SudokuUnsolvableException.class, () ->sudokuSolvingAlgorithm.checkBlock(0,0));
+    }
+
+    @Test
+    void checkAllLoopsShouldThrowException() {
+
+        //Given
+        sudokuBoard = new SudokuBoard();
+
+        sudokuSolvingAlgorithm = new SudokuSolvingAlgorithm(sudokuBoard);
         sudokuBoard.addNumberToBoard(new GuessedValue(1, 0, 5));
+        sudokuBoard.addNumberToBoard(new GuessedValue(1, 1, 5));
 
         //When&Then
         assertThrows(SudokuUnsolvableException.class, () ->sudokuSolvingAlgorithm.checkAllLoops());

@@ -17,8 +17,7 @@ public class SudokuSolvingAlgorithm {
         for (int row = 0; row < 9; row++) {
             for (int col = 0; col < 9; col++) {
                 SudokuElement element = sudokuBoard.getSudokuBoard().get(row).getSudokuRow().get(col);
-                if (element.getValue() == -1
-                        && element.getValuesSet().size() > 0) {
+                if (element.getValue() == -1) {
                     for (SudokuElement theElement : sudokuBoard.getSudokuBoard().get(row).getSudokuRow()) {
                         if (theElement.getValue() != -1
                                 && element.getValuesSet().contains(theElement.getValue())
@@ -34,6 +33,13 @@ public class SudokuSolvingAlgorithm {
                     if (element.getValuesSet().size() == 1) {
                         element.lastNumberInValuesSet();
                         operationsCounterRows++;
+                    }
+                } else {
+                    for (SudokuElement theElement : sudokuBoard.getSudokuBoard().get(row).getSudokuRow()) {
+                        if(theElement.getValue() == sudokuBoard.getSudokuBoard().get(row).getSudokuRow().get(col).getValue()
+                        && theElement != sudokuBoard.getSudokuBoard().get(row).getSudokuRow().get(col)) {
+                            throw new SudokuUnsolvableException();
+                        }
                     }
                 }
                 if (element.getValue() == -1
@@ -51,15 +57,15 @@ public class SudokuSolvingAlgorithm {
         for (int col = 0; col < 9; col++) {
             for (int row = 0; row < 9; row++) {
                 SudokuElement element = sudokuBoard.getSudokuBoard().get(row).getSudokuRow().get(col);
-                if (element.getValue() == -1 && element.getValuesSet().size() > 0) {
-                    for (int rowFromtheSameColumn = 0; rowFromtheSameColumn < 9; rowFromtheSameColumn++) {
-                        int valueToRemove = sudokuBoard.getSudokuBoard().get(rowFromtheSameColumn).getSudokuRow().get(col).getValue();
-                        if (sudokuBoard.getSudokuBoard().get(rowFromtheSameColumn).getSudokuRow().get(col).getValue() != -1
+                if (element.getValue() == -1) {
+                    for (int rowFromTheSameColumn = 0; rowFromTheSameColumn < 9; rowFromTheSameColumn++) {
+                        int valueToRemove = sudokuBoard.getSudokuBoard().get(rowFromTheSameColumn).getSudokuRow().get(col).getValue();
+                        if (sudokuBoard.getSudokuBoard().get(rowFromTheSameColumn).getSudokuRow().get(col).getValue() != -1
                                 && element.getValuesSet().contains(valueToRemove)
                                 && element.getValuesSet().size() > 1) {
                             element.getValuesSet().remove(valueToRemove);
                             operationsCounterColumn++;
-                        } else if (sudokuBoard.getSudokuBoard().get(rowFromtheSameColumn).getSudokuRow().get(col).getValue() != -1
+                        } else if (sudokuBoard.getSudokuBoard().get(rowFromTheSameColumn).getSudokuRow().get(col).getValue() != -1
                                 && element.getValuesSet().contains(valueToRemove)
                                 && element.getValuesSet().size() == 1) {
                             throw new SudokuUnsolvableException();
@@ -68,6 +74,13 @@ public class SudokuSolvingAlgorithm {
                     if (element.getValuesSet().size() == 1) {
                         element.lastNumberInValuesSet();
                         operationsCounterColumn++;
+                    }
+                } else {
+                    for (int rowFromTheSameColumn = 0; rowFromTheSameColumn < 9; rowFromTheSameColumn++) {
+                        if (element.getValue() == sudokuBoard.getSudokuBoard().get(rowFromTheSameColumn).getSudokuRow().get(col).getValue()
+                        && element != sudokuBoard.getSudokuBoard().get(rowFromTheSameColumn).getSudokuRow().get(col)) {
+                            throw new SudokuUnsolvableException();
+                        }
                     }
                 }
                 if (element.getValue() == -1
@@ -97,7 +110,7 @@ public class SudokuSolvingAlgorithm {
         for (int col = startCol; col < startCol + 3; col++) {
             for (int row = startRow; row < startRow + 3; row++) {
                 SudokuElement element = sudokuBoard.getSudokuBoard().get(row).getSudokuRow().get(col);
-                if (element.getValue() == -1 && element.getValuesSet().size() > 0) {
+                if (element.getValue() == -1) {
                     for (int j = startCol; j < startCol + 3; j++) {
                         for (int i = startRow; i < startRow + 3; i++) {
                             int valueToRemove = sudokuBoard.getSudokuBoard().get(i).getSudokuRow().get(j).getValue();
@@ -115,63 +128,66 @@ public class SudokuSolvingAlgorithm {
                             operationsCounterBlock++;
                         }
                     }
+                } else {
+                    for (int j = startCol; j < startCol + 3; j++) {
+                        for (int i = startRow; i < startRow + 3; i++) {
+                            if (sudokuBoard.getSudokuBoard().get(i).getSudokuRow().get(j).getValue() == element.getValue()
+                                    && sudokuBoard.getSudokuBoard().get(i).getSudokuRow().get(j) != element) {
+                                throw new SudokuUnsolvableException();
+                            }
+                        }
+                    }
                 }
-                if (element.getValue() == -1 && element.getValuesSet().size() == 0) {
+                    if (element.getValue() == -1 && element.getValuesSet().size() == 0) {
+                        throw new SudokuUnsolvableException();
+                    }
+                }
+            }
+            return operationsCounterBlock;
+        }
+
+        public void checkAllLoops () throws SudokuUnsolvableException {
+
+            boolean areAllOperationsDone = false;
+            while (!areAllOperationsDone) {
+                int rowOperationsResult = checkRows();
+                int columnOperationsResult = checkColumns();
+                int blocksOperationsResult = checkBlocks();
+                if (rowOperationsResult + columnOperationsResult + blocksOperationsResult == 0) {
+                    areAllOperationsDone = true;
+                }
+            }
+        }
+
+        public GuessedValue guessingProcedure () throws SudokuUnsolvableException {
+
+            Random random = new Random();
+            boolean areRandomValuesGenerated = false;
+            int randomRow = 0;
+            int randomColumn = 0;
+            int randomValue = 0;
+            while (!areRandomValuesGenerated) {
+                randomRow = random.nextInt(9);
+                randomColumn = random.nextInt(9);
+                Integer[] valuesSetArray = sudokuBoard.getSudokuBoard().get(randomRow).getSudokuRow().get(randomColumn)
+                        .getValuesSet().toArray(new Integer[0]);
+                if (sudokuBoard.getSudokuBoard().get(randomRow).getSudokuRow().get(randomColumn).getValue() == -1
+                        && valuesSetArray.length > 0) {
+                    randomValue = valuesSetArray[random.nextInt(valuesSetArray.length)];
+                    areRandomValuesGenerated = true;
+                } else if (sudokuBoard.getSudokuBoard().get(randomRow).getSudokuRow().get(randomColumn).getValue() == -1
+                        && valuesSetArray.length == 0) {
                     throw new SudokuUnsolvableException();
                 }
             }
+            return new GuessedValue(randomRow, randomColumn, randomValue);
         }
-        return operationsCounterBlock;
-    }
 
-    public void checkAllLoops() throws SudokuUnsolvableException {
+        public long countNumberOfEmptyCells () {
 
-        int allLoopsCounter = 0;
-        boolean areAllOperationsDone = false;
-        while (!areAllOperationsDone) {
-            allLoopsCounter++;
-            int rowOperationsResult = checkRows();
-            int columnOperationsResult = checkColumns();
-            int blocksOperationsResult = checkBlocks();
-            if (rowOperationsResult + columnOperationsResult + blocksOperationsResult == 0 && allLoopsCounter > 1) {
-                checkRows();
-                checkColumns();
-                areAllOperationsDone = true;
-            } else if (rowOperationsResult + columnOperationsResult + blocksOperationsResult == 0 && allLoopsCounter == 1) {
-                throw new SudokuUnsolvableException();
-            }
+            return sudokuBoard.getSudokuBoard().stream().flatMap(row -> row.getSudokuRow().stream())
+                    .map(SudokuElement::getValue)
+                    .filter(v -> v == -1)
+                    .count();
         }
     }
-
-    public GuessedValue guessingProcedure() throws SudokuUnsolvableException {
-
-        Random random = new Random();
-        boolean areRandomValuesGenerated = false;
-        int randomRow = 0;
-        int randomColumn = 0;
-        int randomValue = 0;
-        while (!areRandomValuesGenerated) {
-            randomRow = random.nextInt(9);
-            randomColumn = random.nextInt(9);
-            Integer[] valuesSetArray = sudokuBoard.getSudokuBoard().get(randomRow).getSudokuRow().get(randomColumn)
-                    .getValuesSet().toArray(new Integer[0]);
-            if (sudokuBoard.getSudokuBoard().get(randomRow).getSudokuRow().get(randomColumn).getValue() == -1
-                    && valuesSetArray.length > 0) {
-                randomValue = valuesSetArray[random.nextInt(valuesSetArray.length)];
-                areRandomValuesGenerated = true;
-            } else if (sudokuBoard.getSudokuBoard().get(randomRow).getSudokuRow().get(randomColumn).getValue() == -1
-                    && valuesSetArray.length == 0) {
-                throw new SudokuUnsolvableException();
-            }
-        }
-        return new GuessedValue(randomRow, randomColumn, randomValue);
-    }
-
-    public long countNumberOfEmptyCells() {
-
-        return sudokuBoard.getSudokuBoard().stream().flatMap(row -> row.getSudokuRow().stream())
-                .map(SudokuElement::getValue)
-                .filter(v -> v == -1)
-                .count();
-    }
-}

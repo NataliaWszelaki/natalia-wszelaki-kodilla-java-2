@@ -8,8 +8,8 @@ import static com.kodilla.sudoku.SudokuElement.EMPTY;
 
 public class SudokuBoard extends Prototype<SudokuBoard> {
 
-    public static String LINE = "   - - - - - - - - - ";
-    public static String LINE3 = "   - - -+- - -+- - - ";
+    public static final String LINE = "   - - - - - - - - - ";
+    public static final String LINE3 = "   - - -+- - -+- - - ";
     private List<SudokuRow> sudokuBoard = new ArrayList<>();
 
     public SudokuBoard() {

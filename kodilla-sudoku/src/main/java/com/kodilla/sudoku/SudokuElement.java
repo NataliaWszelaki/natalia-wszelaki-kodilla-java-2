@@ -12,7 +12,7 @@ public class SudokuElement {
         this.value = value;
         for (int i = 1; i < 10; i++) {
             valuesSet.add(i);
-        };
+        }
     }
 
     public SudokuElement(int value, Set<Integer> valuesSet) {
